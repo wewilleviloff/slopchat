@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Рейтинг шизонутости — NOCHNOY DOZOR CHAT</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2330;--border:#2d3646;--text:#e6edf3;--muted:#8b949e;--accent:#f778ba;--hot:#ff6b35}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;padding:24px}
+  h1{margin:0 0 4px;font-size:26px}
+  .sub{color:var(--muted);margin-bottom:20px;font-size:14px}
+  .kpis{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 18px;min-width:160px}
+  .kpi b{display:block;font-size:20px;color:var(--accent)}
+  .kpi span{font-size:12px;color:var(--muted)}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+  .controls input[type=text]{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:14px;width:220px}
+  .chipbtn{background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer}
+  .chipbtn.active{background:var(--accent);color:#111;border-color:var(--accent);font-weight:600}
+  .hint{color:var(--muted);font-size:12px;margin-left:auto;max-width:420px}
+  .tblwrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;min-width:1200px;font-size:14px}
+  thead th{position:sticky;top:0;background:var(--panel2);padding:10px 8px;text-align:right;white-space:nowrap;cursor:pointer;user-select:none;border-bottom:2px solid var(--border);font-size:13px;z-index:2}
+  thead th:first-child,thead th.l{text-align:left}
+  thead th .filt{display:block;cursor:text;margin-top:5px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:3px 6px;width:72px;font-size:11px;font-weight:400}
+  thead th .filt.name-f{width:150px}
+  thead th .filt::placeholder{color:#4d5a6b}
+  thead th.sorted-asc:after{content:" ▲";color:var(--accent)}
+  thead th.sorted-desc:after{content:" ▼";color:var(--accent)}
+  tbody td{padding:8px;border-bottom:1px solid #212836;text-align:right;white-space:nowrap}
+  tbody tr:hover{background:#1f2733}
+  td.name{text-align:left;font-weight:600}
+  td.rank{color:var(--muted);text-align:center;width:34px}
+  td.cmt{text-align:left;color:var(--muted);font-size:12.5px;white-space:normal;min-width:240px}
+  .bar{display:inline-flex;align-items:center;gap:8px;justify-content:flex-end;width:130px}
+  .bar i{flex:1;height:8px;border-radius:4px;background:#232b3a;position:relative;overflow:hidden}
+  .bar i em{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+  .bar b{width:26px;text-align:right}
+  .lvl-hot em{background:linear-gradient(90deg,#ff6b35,#f73c5e)}
+  .lvl-warm em{background:linear-gradient(90deg,#ffb03a,#ff6b35)}
+  .lvl-mid em{background:linear-gradient(90deg,#ffe066,#ffb03a)}
+  .lvl-cold em{background:linear-gradient(90deg,#3fb6ff,#66e0a1)}
+  td.mat.hi{color:#ff8787;font-weight:600}
+  td.night.hi{color:#b48cff;font-weight:600}
+  td.selfref.hi{color:#ffd76a;font-weight:600}
+  td.given.max{color:#66e0a1;font-weight:700}
+  .count{color:var(--muted);margin:12px 2px 0;font-size:13px}
+  footer{color:#4d5a6b;font-size:11px;margin-top:16px;line-height:1.5}
+</style>
+</head>
+<body>
+<h1>🔥 Рейтинг шизонутости <span style="color:var(--muted);font-size:16px">ETO ZHE NOCHNOY DOZOR CHAT</span></h1>
+<div class="sub">Шкала 0–100 по текстово-поведенческим маркерам · 150&nbsp;302 сообщения · реакции из HTML-экспорта (~4&nbsp;300 шт.). Развлекательная эвристика, не диагноз 🙂</div>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="🔎 Поиск по имени…">
+  <button class="chipbtn active" data-band="all">Все</button>
+  <button class="chipbtn" data-band="hot">Очень шиза (≥55)</button>
+  <button class="chipbtn" data-band="mid">Средняя (45–54)</button>
+  <button class="chipbtn" data-band="low">Тихие (&lt;45)</button>
+  <span class="hint">Клик по заголовку — сортировка. Поля под заголовками — числовые фильтры: «&gt;=10», «&lt;5», диапазон «10..20» или точное значение.</span>
+</div>
+
+<div class="tblwrap">
+<table>
+<thead><tr>
+  <th>#</th>
+  <th class="l" data-k="name">Участник<input class="filt name-f" data-f="name" placeholder="имя…"></th>
+  <th data-k="score">Шиза /100<input class="filt" data-f="score" placeholder="≥"></th>
+  <th data-k="msgs">Сообщений<input class="filt" data-f="msgs" placeholder="≥"></th>
+  <th data-k="mat">Мат %<input class="filt" data-f="mat" placeholder="≥"></th>
+  <th data-k="night">Ночь %<input class="filt" data-f="night" placeholder="≥"></th>
+  <th data-k="selfref">«Я» %<input class="filt" data-f="selfref" placeholder="≥"></th>
+  <th data-k="caps">CAPS %<input class="filt" data-f="caps" placeholder="≥"></th>
+  <th data-k="q">Вопросы %<input class="filt" data-f="q" placeholder="≥"></th>
+  <th data-k="burst">Импульс/час<input class="filt" data-f="burst" placeholder="≥"></th>
+  <th data-k="avglen">Ср. длина<input class="filt" data-f="avglen" placeholder="≥"></th>
+  <th data-k="recv">Реакций собрано<input class="filt" data-f="recv" placeholder="≥"></th>
+  <th data-k="given">Реакций поставлено<input class="filt" data-f="given" placeholder="≥"></th>
+  <th class="l">Комментарий</th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<div class="count" id="count"></div>
+
+<footer>Маркеры: доля сообщений с матом; ночные сообщения (00:00–05:59); доля «я-высказываний»; CAPS; вопросы; пиковая скорость (сообщ./час); средняя длина;
+модификатор «валидации» (+ много поставленных / мало собранных реакций, − высокий социальный статус). Источники: all_msgs.json, HTML-экспорт чата.</footer>
+
+<script>
+const DATA=[{"name": "positive", "score": 65, "msgs": 2345, "mat": 17.5, "night": 26.8, "selfref": 8.5, "caps": 7.8, "q": 12.9, "burst": 14, "avglen": 138, "recv": 425, "given": 157, "comment": "Мат+драма+ночь, но его обожают — шиза как стендап-образ"}, {"name": "Александр", "score": 61, "msgs": 7306, "mat": 12.4, "night": 6.0, "selfref": 12.7, "caps": 4.1, "q": 18.4, "burst": 74, "avglen": 150, "recv": 266, "given": 24, "comment": "Дневной философ-бурильщик, простыни по 150 знаков"}, {"name": "Donique Keque", "score": 59, "msgs": 5647, "mat": 10.0, "night": 31.7, "selfref": 18.1, "caps": 1.3, "q": 6.4, "burst": 80, "avglen": 24, "recv": 83, "given": 278, "comment": "Пиковая ночь + охота за реакциями"}, {"name": "TrueBonk", "score": 59, "msgs": 1695, "mat": 13.7, "night": 20.4, "selfref": 14.2, "caps": 1.5, "q": 21.8, "burst": 27, "avglen": 84, "recv": 75, "given": 67, "comment": "Жизненные драмы, таблетки, вопросы «а я нормальный?»"}, {"name": "JoyAndEnjoy", "score": 58, "msgs": 9610, "mat": 23.8, "night": 15.8, "selfref": 18.6, "caps": 2.0, "q": 5.7, "burst": 133, "avglen": 48, "recv": 168, "given": 1, "comment": "Рекордсмен по мату и импульсу; реакций не ставит — чистая бравада"}, {"name": "Семен Свалов", "score": 58, "msgs": 1156, "mat": 19.6, "night": 19.2, "selfref": 8.0, "caps": 4.9, "q": 5.7, "burst": 36, "avglen": 77, "recv": 48, "given": 11, "comment": "Мат через каждое пятое, напористый тон"}, {"name": "allison road", "score": 57, "msgs": 576, "mat": 8.3, "night": 30.6, "selfref": 24.3, "caps": 0.7, "q": 10.1, "burst": 71, "avglen": 31, "recv": 39, "given": 34, "comment": "Ночная аффективная жвачка в 3–4 утра, максимум «я»"}, {"name": "Нехочуха", "score": 54, "msgs": 4213, "mat": 13.5, "night": 20.8, "selfref": 20.0, "caps": 1.8, "q": 5.0, "burst": 116, "avglen": 36, "recv": 34, "given": 26, "comment": "Запойные сессии по 116 сообщ./час"}, {"name": "Mira", "score": 54, "msgs": 639, "mat": 1.3, "night": 17.2, "selfref": 20.5, "caps": 12.5, "q": 22.5, "burst": 69, "avglen": 370, "recv": 17, "given": 0, "comment": "Среднее сообщение 370 знаков (!), диагнозы/таблетки, CAPS — отдельная вселенная"}, {"name": "Bruh... Тропический", "score": 53, "msgs": 7073, "mat": 13.8, "night": 23.1, "selfref": 12.6, "caps": 1.0, "q": 4.7, "burst": 54, "avglen": 64, "recv": 116, "given": 68, "comment": "Ночной тропический бродяга"}, {"name": "Николай", "score": 53, "msgs": 5944, "mat": 19.2, "night": 9.3, "selfref": 8.3, "caps": 0.9, "q": 2.7, "burst": 75, "avglen": 46, "recv": 252, "given": 150, "comment": "Дневный провокатор, но социально признан"}, {"name": "Minessota", "score": 52, "msgs": 2319, "mat": 14.1, "night": 16.9, "selfref": 8.2, "caps": 0.9, "q": 7.2, "burst": 104, "avglen": 49, "recv": 64, "given": 83, "comment": "Шквалы 100+ сообщений в час"}, {"name": "Егор Краснопевцев", "score": 49, "msgs": 3637, "mat": 11.4, "night": 26.0, "selfref": 9.2, "caps": 0.9, "q": 22.3, "burst": 52, "avglen": 37, "recv": 26, "given": 5, "comment": "Ночной вопроситель"}, {"name": "Sham Shab", "score": 48, "msgs": 5268, "mat": 12.5, "night": 15.1, "selfref": 7.9, "caps": 6.6, "q": 18.8, "burst": 36, "avglen": 81, "recv": 197, "given": 189, "comment": "Громкий (CAPS), но встроен в социум"}, {"name": "Лёшка", "score": 48, "msgs": 1690, "mat": 12.1, "night": 20.7, "selfref": 11.7, "caps": 0.1, "q": 16.7, "burst": 51, "avglen": 44, "recv": 2, "given": 58, "comment": "Трагедия: 1743 сообщения — и 2 собранные реакции"}, {"name": "Vincent Vegan", "score": 47, "msgs": 1587, "mat": 11.5, "night": 13.5, "selfref": 13.9, "caps": 4.0, "q": 25.0, "burst": 24, "avglen": 76, "recv": 72, "given": 7, "comment": "Четверть сообщений с «?» — проповедь-онлайн"}, {"name": "Dasein", "score": 46, "msgs": 8543, "mat": 16.3, "night": 12.0, "selfref": 7.7, "caps": 1.8, "q": 8.0, "burst": 34, "avglen": 48, "recv": 399, "given": 466, "comment": "Мат много, но статус максимальный — шиза уважаемая"}, {"name": "Goodman", "score": 46, "msgs": 392, "mat": 16.6, "night": 8.2, "selfref": 4.3, "caps": 0.8, "q": 12.5, "burst": 48, "avglen": 46, "recv": 3, "given": 0, "comment": "Грубый юмор без попыток понравиться"}, {"name": "Вадим", "score": 45, "msgs": 3141, "mat": 14.5, "night": 8.8, "selfref": 11.4, "caps": 1.7, "q": 20.9, "burst": 26, "avglen": 56, "recv": 103, "given": 29, "comment": "Прямолинейный, матковатый"}, {"name": "Дмитрий ❄️", "score": 45, "msgs": 3094, "mat": 7.6, "night": 7.4, "selfref": 9.9, "caps": 2.7, "q": 17.6, "burst": 45, "avglen": 80, "recv": 112, "given": 294, "comment": "Реакционный донор"}, {"name": "Aleksandr Evmenov", "score": 45, "msgs": 2166, "mat": 12.0, "night": 3.4, "selfref": 8.4, "caps": 2.6, "q": 6.4, "burst": 108, "avglen": 47, "recv": 54, "given": 156, "comment": "Почти дневной, но вспышки 108/час — морализаторство"}, {"name": "I", "score": 45, "msgs": 1058, "mat": 6.9, "night": 29.9, "selfref": 12.3, "caps": 0.8, "q": 9.6, "burst": 64, "avglen": 33, "recv": 52, "given": 1, "comment": "Молчаливый ник, 30% ночи"}, {"name": "X L", "score": 45, "msgs": 992, "mat": 5.2, "night": 28.3, "selfref": 9.3, "caps": 3.3, "q": 8.8, "burst": 44, "avglen": 117, "recv": 70, "given": 53, "comment": "Ночной многослов"}, {"name": "Дед Семён", "score": 44, "msgs": 2411, "mat": 1.5, "night": 23.4, "selfref": 6.0, "caps": 3.5, "q": 10.9, "burst": 37, "avglen": 97, "recv": 98, "given": 800, "comment": "Чемпион по поставленным реакциям — дедуля-спонсор внимания"}, {"name": "c♂da", "score": 43, "msgs": 2261, "mat": 16.2, "night": 8.9, "selfref": 12.3, "caps": 0.4, "q": 6.9, "burst": 61, "avglen": 27, "recv": 37, "given": 76, "comment": "Короткие меткие сообщения"}, {"name": "Loki", "score": 43, "msgs": 1722, "mat": 16.7, "night": 19.9, "selfref": 15.0, "caps": 2.7, "q": 7.0, "burst": 31, "avglen": 36, "recv": 56, "given": 18, "comment": "Ехидство + самолюбование"}, {"name": "Kotyan", "score": 42, "msgs": 309, "mat": 6.8, "night": 23.9, "selfref": 17.5, "caps": 0.0, "q": 6.1, "burst": 39, "avglen": 39, "recv": 21, "given": 3, "comment": "Ночной эгоцентризм"}, {"name": "TRY", "score": 40, "msgs": 15525, "mat": 2.5, "night": 25.7, "selfref": 9.5, "caps": 2.5, "q": 11.9, "burst": 66, "avglen": 67, "recv": 243, "given": 259, "comment": "Админ-балансир: ночной, но почти не матерится"}, {"name": "преттигерл", "score": 38, "msgs": 1303, "mat": 5.6, "night": 27.8, "selfref": 18.0, "caps": 0.8, "q": 1.2, "burst": 61, "avglen": 16, "recv": 12, "given": 1, "comment": "Ночные короткие «я-высказывания»"}, {"name": "Sosed_Sverhu", "score": 37, "msgs": 514, "mat": 10.7, "night": 14.8, "selfref": 4.7, "caps": 1.6, "q": 16.0, "burst": 69, "avglen": 31, "recv": 28, "given": 13, "comment": "Шумит импульсами"}, {"name": "Pelf", "score": 36, "msgs": 2126, "mat": 7.9, "night": 22.2, "selfref": 5.4, "caps": 0.1, "q": 6.3, "burst": 92, "avglen": 31, "recv": 16, "given": 30, "comment": "Рваный ритм: 92/час, потом тишина"}, {"name": "Maniacally🍀", "score": 36, "msgs": 120, "mat": 10.8, "night": 34.2, "selfref": 8.3, "caps": 1.7, "q": 7.5, "burst": 29, "avglen": 45, "recv": 7, "given": 150, "comment": "Самый ночной в чате при низкой видимости"}, {"name": "Alexander Sysoev", "score": 35, "msgs": 17191, "mat": 12.6, "night": 15.5, "selfref": 7.3, "caps": 3.9, "q": 16.3, "burst": 58, "avglen": 46, "recv": 395, "given": 344, "comment": "Движок чата; шиза размазана объёмом"}, {"name": "😉Максим", "score": 35, "msgs": 7793, "mat": 5.6, "night": 16.0, "selfref": 6.7, "caps": 2.9, "q": 28.6, "burst": 19, "avglen": 67, "recv": 393, "given": 60, "comment": "Самый методичный, вопросник, его любят"}, {"name": "Боша Толмани", "score": 28, "msgs": 445, "mat": 7.9, "night": 0.9, "selfref": 25.4, "caps": 0.9, "q": 9.7, "burst": 26, "avglen": 27, "recv": 5, "given": 4, "comment": "Максимальный самофокус — говорит только о себе"}, {"name": "Dn", "score": 27, "msgs": 722, "mat": 6.2, "night": 20.2, "selfref": 8.9, "caps": 0.3, "q": 5.5, "burst": 38, "avglen": 42, "recv": 4, "given": 3, "comment": "Тихий ночной наблюдатель"}, {"name": "Akif Alakbarov", "score": 27, "msgs": 119, "mat": 15.1, "night": 5.9, "selfref": 7.6, "caps": 0.0, "q": 12.6, "burst": 22, "avglen": 22, "recv": 9, "given": 1, "comment": "Редкий, маткий, безразличный"}, {"name": "Елена Олеговна", "score": 24, "msgs": 315, "mat": 4.8, "night": 26.7, "selfref": 8.3, "caps": 0.6, "q": 27.6, "burst": 18, "avglen": 35, "recv": 12, "given": 5, "comment": "Спокойная ночная спрашивающая"}, {"name": "Juul", "score": 19, "msgs": 75, "mat": 2.7, "night": 0.0, "selfref": 25.3, "caps": 0.0, "q": 8.0, "burst": 29, "avglen": 14, "recv": 2, "given": 0, "comment": "Самый «здоровый»: ни ночи, ни мата"}];
+const NUMK=["score","msgs","mat","night","selfref","caps","q","burst","avglen","recv","given"];
+
+const avg=a=>DATA.reduce((s,d)=>s+d[a],0)/DATA.length;
+const maxBy=a=>DATA.reduce((m,d)=>d[a]>m[a]?d:m);
+document.getElementById("kpis").innerHTML=[
+ ["Участников",DATA.length],
+ ["Средняя шиза",Math.round(avg("score"))],
+ ["Максимум мата",maxBy("mat").name+" · "+maxBy("mat").mat+"%"],
+ ["Самый ночной",maxBy("night").name+" · "+maxBy("night").night+"%"],
+ ["Чемпион по реакциям",maxBy("recv").name+" · "+maxBy("recv").recv],
+ ["Меценат года",maxBy("given").name+" · "+maxBy("given").given+" ставит"]
+].map(k=>'<div class="kpi"><b>'+k[1]+'</b><span>'+k[0]+'</span></div>').join("");
+
+let sortKey="score",sortDir=-1,band="all";
+const filters={};
+const lvl=s=>s>=55?"hot":s>=45?"warm":s>=35?"mid":"cold";
+
+function passNum(v,f){
+  if(!f)return true;
+  let m=f.match(/^(-?[\d.]+)\.\.(-?[\d.]+)$/);
+  if(m)return v>=+m[1]&&v<=+m[2];
+  m=f.match(/^(>=|<=|>|<|=)?\s*(-?[\d.,]+)$/);
+  if(m){
+    const x=parseFloat(m[2].replace(",","."));
+    switch(m[1]){case ">":return v>x;case "<":return v<x;case "<=":return v<=x;default:return v>=x;}
+  }
+  return true;
+}
+
+function render(){
+  const q=document.getElementById("search").value.trim().toLowerCase();
+  let rows=DATA.filter(d=>{
+    if(band==="hot"&&d.score<55)return false;
+    if(band==="mid"&&(d.score<45||d.score>=55))return false;
+    if(band==="low"&&d.score>=45)return false;
+    if(q&&!d.name.toLowerCase().includes(q))return false;
+    const nf=(filters["name"]||"").toLowerCase();
+    if(nf&&!d.name.toLowerCase().includes(nf))return false;
+    for(const k of NUMK){if(!passNum(d[k],filters[k]||""))return false;}
+    return true;
+  });
+  rows.sort((a,b)=>{
+    const va=a[sortKey],vb=b[sortKey];
+    return (typeof va==="string"?va.localeCompare(vb,"ru"):(va-vb))*sortDir;
+  });
+  const maxRecv=Math.max.apply(null,DATA.map(d=>d.recv)),maxGiven=Math.max.apply(null,DATA.map(d=>d.given));
+  document.getElementById("tbody").innerHTML=rows.map((d,i)=>"<tr>"+
+    '<td class="rank">'+(i+1)+"</td>"+
+    '<td class="name">'+d.name+"</td>"+
+    '<td><span class="bar lvl-'+lvl(d.score)+'"><i><em style="width:'+d.score+'%"></em></i><b>'+d.score+"</b></span></td>"+
+    "<td>"+d.msgs.toLocaleString("ru-RU")+"</td>"+
+    '<td class="mat'+(d.mat>=12?" hi":"")+'">'+d.mat.toFixed(1)+"</td>"+
+    '<td class="night'+(d.night>=25?" hi":"")+'">'+d.night.toFixed(1)+"</td>"+
+    '<td class="selfref'+(d.selfref>=18?" hi":"")+'">'+d.selfref.toFixed(1)+"</td>"+
+    "<td>"+d.caps.toFixed(1)+"</td>"+
+    "<td>"+d.q.toFixed(1)+"</td>"+
+    "<td>"+d.burst+"</td>"+
+    "<td>"+d.avglen+"</td>"+
+    "<td>"+d.recv+(d.recv===maxRecv?" 🏆":"")+"</td>"+
+    '<td class="given'+(d.given===maxGiven?" max":"")+'">'+d.given+"</td>"+
+    '<td class="cmt">'+d.comment+"</td></tr>").join("");
+  document.getElementById("count").textContent="Показано "+rows.length+" из "+DATA.length;
+}
+
+document.querySelectorAll("thead th[data-k]").forEach(th=>{
+  th.addEventListener("click",e=>{
+    if(e.target.classList.contains("filt"))return;
+    const k=th.dataset.k;
+    if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=(k==="name")?1:-1;}
+    document.querySelectorAll("thead th").forEach(t=>t.classList.remove("sorted-asc","sorted-desc"));
+    th.classList.add(sortDir===1?"sorted-asc":"sorted-desc");
+    render();
+  });
+});
+document.querySelectorAll(".filt").forEach(inp=>{
+  inp.addEventListener("click",e=>e.stopPropagation());
+  inp.addEventListener("input",()=>{filters[inp.dataset.f]=inp.value.trim();render();});
+});
+document.getElementById("search").addEventListener("input",render);
+document.querySelectorAll(".chipbtn").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".chipbtn").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");band=b.dataset.band;render();
+}));
+render();
+</script>
+</body>
+</html>
