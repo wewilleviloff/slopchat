@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>slopchat — навигация</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: #0d0f12; color: #d7dae0;
+    max-width: 880px; margin: 0 auto; padding: 48px 20px 64px;
+  }
+  header h1 { font-size: 22px; font-weight: 600; letter-spacing: .5px; }
+  header p  { color: #7c8290; font-size: 13px; margin-top: 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+           gap: 10px; margin: 28px 0 8px; }
+  .stat { background: #14171c; border: 1px solid #23272f; border-radius: 8px; padding: 12px 14px; }
+  .stat b { display: block; font-size: 20px; font-weight: 600; color: #fff; }
+  .stat span { font-size: 11px; color: #7c8290; text-transform: uppercase; letter-spacing: .5px; }
+
+  .tops { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 10px; margin: 18px 0 34px; }
+  .topbox { background: #14171c; border: 1px solid #23272f; border-radius: 8px; padding: 14px 16px; }
+  .topbox h3 { font-size: 11px; color: #7c8290; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .topbox li { list-style: none; display: flex; justify-content: space-between;
+               font-size: 13px; padding: 3px 0; border-bottom: 1px dotted #23272f; }
+  .topbox li:last-child { border-bottom: none; }
+  .topbox li em { font-style: normal; color: #8ab4f8; }
+
+  h2.section { font-size: 11px; color: #7c8290; text-transform: uppercase;
+               letter-spacing: 1px; margin-bottom: 12px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  a.card {
+    display: block; background: #14171c; border: 1px solid #23272f; border-radius: 10px;
+    padding: 16px; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s;
+  }
+  a.card:hover { border-color: #8ab4f8; transform: translateY(-2px); }
+  a.card h2 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  a.card p  { font-size: 12.5px; color: #7c8290; line-height: 1.4; }
+
+  footer { margin-top: 40px; font-size: 11.5px; color: #565b66; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>slopchat · навигация по анализу</h1>
+    <p>чат «NOCHNOY DOZOR» · период {{PERIOD}} · обновлено {{GENERATED}}</p>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><b>{{N_PARTICIPANTS}}</b><span>участников</span></div>
+    <div class="stat"><b>{{N_REPLY_PAIRS}}</b><span>пар ответов</span></div>
+    <div class="stat"><b>{{N_REPLY_MSGS}}</b><span>сообщений в цепочках</span></div>
+    <div class="stat"><b>{{N_EXPORT_PAGES}}</b><span>страниц экспорта</span></div>
+  </section>
+
+  <section class="tops">
+    <div class="topbox"><h3>🎪 Топ шизонутости</h3><ul id="top-weird"></ul></div>
+    <div class="topbox"><h3>🇷🇺 Топ патриотичности</h3><ul id="top-patriot"></ul></div>
+    <div class="topbox"><h3>💬 Самые активные</h3><ul id="most-active"></ul></div>
+  </section>
+
+  <h2 class="section">Страницы</h2>
+  <nav class="cards">
+      {{CARDS}}
+  </nav>
+
+  <footer>статистика: assets/stats.json · собрано build.py</footer>
+
+<script>
+const TOP_WEIRD = {{TOP_WEIRD}};
+const TOP_PATRIOT = {{TOP_PATRIOT}};
+const MOST_ACTIVE = {{MOST_ACTIVE}};
+
+function fill(id, rows, unit) {
+  const ul = document.getElementById(id);
+  for (const [name, val] of rows) {
+    const li = document.createElement('li');
+    const a = document.createElement('span'); a.textContent = name;
+    const b = document.createElement('em');   b.textContent = val + unit;
+    li.append(a, b); ul.append(li);
+  }
+}
+fill('top-weird',    TOP_WEIRD,    '');
+fill('top-patriot',  TOP_PATRIOT,  '');
+fill('most-active',  MOST_ACTIVE,  ' сообщ.');
+</script>
+</body>
+</html>
