@@ -1,0 +1,100 @@
+graph chat {
+  graph [label="Карта отношений slopchat (29.03–31.10.2026)\nТолщина линии = взаимные ответы (n). Цвета: синий=ядро, фиолетовый=второй эшелон,\nзелёный=эмоциональный кластер, красный=конфликтная ось, оранжевый=периферия, серый=боты",
+         labelloc=t, fontsize=16, fontname="DejaVu Sans", dpi=150, bgcolor="white", nodesep=0.4, ranksep=0.9];
+  node [fontname="DejaVu Sans", fontsize=12, shape=ellipse, style="filled"];
+  edge [color="#888888"];
+
+  // ===== ЯДРО =====
+  subgraph cluster_core {
+    label="ЯДРО («тройка богов»)"; style="rounded,dashed"; color="#4a90d9"; fontsize=13;
+    Sysoev   [label="Alexander Sysoev\n17 191 сообщ.\n«надзирающий старший брат»", fillcolor="#4a90d9", fontcolor=white, fixed=true, pos="0,4!"];
+    TRY      [label="TRY\nсо-модератор,\nравный партнёр ядра", fillcolor="#5b9bd5", fontcolor=white, fixed=true, pos="3,4!"];
+    Joy      [label="JoyAndEnjoy\n«бро»-наставник,\nсамый тёплый узел", fillcolor="#5b9bd5", fontcolor=white, fixed=true, pos="1.5,1.5!"];
+  }
+  Sysoev -- TRY   [penwidth=5.0, label="1126"];
+  Sysoev -- Joy   [penwidth=6.0, label="1391", color="#c0392b", fontcolor="#c0392b"];
+  TRY -- Joy      [penwidth=4.0, label="887"];
+
+  // ===== ВТОРОЙ ЭШЕЛОН =====
+  subgraph cluster_second {
+    label="ВТОРОЙ ЭШЕЛОН / полемисты"; style="rounded,dashed"; color="#8e44ad"; fontsize=13;
+    Dasein  [label="Dasein\nглавный полемист", fillcolor="#9b59b6", fontcolor=white, fixed=true, pos="5.5,6!"];
+    Maksim  [label="😉Максим\n«ученик»", fillcolor="#9b59b6", fontcolor=white, fixed=true, pos="-2.5,6!"];
+    Aleksandr [label="Александр\n«кормилец контента»", fillcolor="#9b59b6", fontcolor=white, fixed=true, pos="4.5,1.5!"];
+    Nikolay [label="Николай\nнейтральный советник", fillcolor="#9b59b6", fontcolor=white, fixed=true, pos="-1,-1!"];
+    Minessota [label="Minessota\n2-й «Критикующий Родитель»,\nкарьерный наставник", fillcolor="#9b59b6", fontcolor=white, fixed=true, pos="6,0.5!"];
+  }
+  Dasein -- TRY      [penwidth=4.2, label="845"];
+  Dasein -- Sysoev   [penwidth=3.0, label="616"];
+  Maksim -- Sysoev   [penwidth=3.2, label="740", constraint=false];
+  Aleksandr -- Sysoev[penwidth=3.2, label="753"];
+  Nikolay -- Sysoev  [penwidth=2.8, label="666"];
+  Nikolay -- Donique [penwidth=2.0, label="437"];
+  Minessota -- Joy   [penwidth=1.4, label="292"];
+  Dasein -- Aleksandr[penwidth=2.0, label="439"];
+
+  // ===== ЭМОЦИОНАЛЬНЫЙ КЛАСТЕР =====
+  subgraph cluster_emotional {
+    label="ЭМОЦИОНАЛЬНЫЙ КЛАСТЕР (вокруг D:)"; style="rounded,dashed"; color="#27ae60"; fontsize=13;
+    Dnode     [label="D:\n5 840 сообщ.\nотцовская роль,\nночная активность", fillcolor="#2ecc71", fontcolor=white, fixed=true, pos="-4.5,2.5!"];
+    Pretty    [label="преттигерл\nравноправная подруга", fillcolor="#a3de81", fontcolor=black, fixed=true, pos="-6.5,4!"];
+    Donique   [label="Donique Keque\n«весёлый шут»,\nночной режим, РПП/травмы", fillcolor="#a3de81", fontcolor=black, fixed=true, pos="-3.5,0!"];
+  }
+  Dnode -- Pretty  [penwidth=3.4, label="689"];
+  Dnode -- Donique [penwidth=3.0, label="592"];
+  Dnode -- TRY     [penwidth=3.6, label="770", color="#27ae60"];
+  Dnode -- Sysoev  [penwidth=2.2, label="437"];
+  Donique -- Sysoev[penwidth=3.0, label="738"];
+
+  // ===== КОНФЛИКТНАЯ ОСЬ / АРТУР =====
+  subgraph cluster_artur {
+    label="ЗОНА АРТУРА (Нехочуха)"; style="rounded,dashed"; color="#c0392b"; fontsize=13;
+    Artur   [label="Нехочуха (Артур)\n4 285 сообщ.\nобъект надзора и стёба", fillcolor="#e74c3c", fontcolor=white, fixed=true, pos="1.5,-4!"];
+    Evmenov [label="Aleksandr Evmenov\n2 172 сообщ.\nроль «судьи», идеолог.\nвойна с Артуром", fillcolor="#e74c3c", fontcolor=white, fixed=true, pos="-1.5,-5.5!"];
+    DedSemen[label="Дед Семён\nзащитник Артура,\n«новостная лента»", fillcolor="#f5b7b1", fontcolor=black, fixed=true, pos="4,-4.5!"];
+    Allison [label="allison road (@obsos689)\n«спасательница» Артура,\nтревожная привязанность", fillcolor="#f5b7b1", fontcolor=black, fixed=true, pos="-1,-2!"];
+  }
+  Artur -- Sysoev   [penwidth=3.4, label="714", color="#c0392b"];
+  Artur -- Evmenov  [penwidth=2.0, label="311", color="#c0392b", style=bold, arrowhead=circle, arrowtail=circle, dir=both, labeldistance=2.2];
+  Artur -- Joy      [penwidth=2.2, label="449", color="#27ae60"];
+  Artur -- Allison  [penwidth=1.3, label="29", color="#e67e22", style=dashed];
+  Artur -- Bruh     [penwidth=1.8, label="380"];
+  Artur -- DedSemen [penwidth=1.2, color="#27ae60", label="защита"];
+  Evmenov -- Sysoev [penwidth=1.0, label="193"];
+  Evmenov -- Joy    [penwidth=1.0, label="287"];
+  Allison -- Sysoev [penwidth=0.8, label="130"];
+  Allison -- Nikolay[penwidth=0.7, label="113"];
+  DedSemen -- Joy   [penwidth=2.2, label="525"];
+
+  // ===== ПЕРИФЕРИЯ =====
+  subgraph cluster_periphery {
+    label="ПЕРИФЕРИЯ"; style="rounded,dashed"; color="#e67e22"; fontsize=13;
+    Bruh    [label="Bruh... Тропический", fillcolor="#f8c471", fontcolor=black, fixed=true, pos="3.5,-2!"];
+    Sham    [label="Sham Shab", fillcolor="#f8c471", fontcolor=black, fixed=true, pos="6.5,3!"];
+    Egor    [label="Егор Краснопевцев", fillcolor="#f8c471", fontcolor=black, fixed=true, pos="0.5,-7!"];
+    Vadim   [label="Вадим", fillcolor="#f8c471", fontcolor=black, fixed=true, pos="-4,-0.5!"];
+    Pelf    [label="Pelf", fillcolor="#f8c471", fontcolor=black, fixed=true, pos="5,-1!"];
+    Goodman [label="Goodman", fillcolor="#f8c471", fontcolor=black, fixed=true, pos="-3.5,-3!"];
+    Loki    [label="Loki", fillcolor="#f8c471", fontcolor=black, fixed=true, pos="7,-3!"];
+  }
+  Bruh -- Joy       [penwidth=2.6, label="529"];
+  Bruh -- TRY       [penwidth=1.6, label="318"];
+  Sham -- TRY       [penwidth=1.6, label="328"];
+  Egor -- Donique   [penwidth=1.8, label="360"];
+  Egor -- Artur     [penwidth=1.2, label="227"];
+  Pelf -- Joy       [penwidth=1.6, label="340"];
+  Goodman -- Allison[penwidth=0.8, label="71"];
+  Vadim -- Sysoev   [penwidth=1.6, label="373"];
+  Loki -- Sysoev    [penwidth=1.0, label="237"];
+
+  // ===== БОТЫ =====
+  subgraph cluster_bots {
+    label="БОТЫ (инфраструктура / мини-игры)"; style="rounded,dashed"; color="#7f8c8d"; fontsize=13;
+    Politach [label="Download Politach bot", fillcolor="#bdc3c7", shape=box, fixed=true, pos="-6,6.5!"];
+    Bankoffo [label="@bankoffo / @bankrollo\n(банковские игры)", fillcolor="#bdc3c7", shape=box, fixed=true, pos="7.5,5.5!"];
+    Turikoff [label="@tur1koff\nмем-идол, «семейный арбитр»\n(упом. 219× от Sysoev)", fillcolor="#d5dbdb", shape=box, fixed=true, pos="-6.5,0.5!"];
+  }
+  Politach -- Maksim [penwidth=4.0, label="823"];
+  Politach -- Sysoev [penwidth=1.8, label="390"];
+  Sysoev -- Turikoff [penwidth=1.2, color="#7f8c8d", style=dotted, label="мемы"];
+}
