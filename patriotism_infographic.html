@@ -163,10 +163,10 @@ document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
  c.classList.add('on');filt=c.dataset.f;render();});
 document.querySelector('.chip[data-f=all]').classList.add('on');
 const kp=document.getElementById('kpis');
-const top=DATA.reduce((a,b)=>b.score>a.score?b:a),bot=DATA.reduce((a,b)=>b.score<a.score?b:a);
+const champ=DATA.reduce((a,b)=>b.score>a.score?b:a),worst=DATA.reduce((a,b)=>b.score<a.score?b:a);
 kp.innerHTML=`<div class="kpi"><span>Средний балл чата</span><b>${Math.round(DATA.reduce((s,r)=>s+r.score,0)/DATA.length)}</b></div>
-<div class="kpi"><span>№1 по патриотичности</span><b>${top.name} · ${top.score}</b></div>
-<div class="kpi"><span>Ниже всех</span><b>${bot.name} · ${bot.score}</b></div>
+<div class="kpi"><span>№1 по патриотичности</span><b>${champ.name} · ${champ.score}</b></div>
+<div class="kpi"><span>Ниже всех</span><b>${worst.name} · ${worst.score}</b></div>
 <div class="kpi"><span>Патриотов (≥70)</span><b>${DATA.filter(r=>r.score>=70).length}</b></div>
 <div class="kpi"><span>С симпатией к др. стране ⚠️</span><b>6 человек 🌍</b></div>`;
 render();
