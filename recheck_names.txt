@@ -1,0 +1,13 @@
+Dmitrii Kopyлов -> []
+Sanya Tsirulnikov -> []
+Aleksandr Popov -> [('Aleksandr Evmenov', 2166), ('Aleksandr Evmenov via @HowYourBot', 5), ('Aleksandr Evmenov 24.06.2026 09:24:11', 1)]
+Даниил Пахомов -> []
+Igor Glazkov -> [('Grigory  06.09.2026 19:41:08', 1), ('Grigory', 2), ('Igor Swarovskiy 29.05.2026 12:31:27', 1)]
+Stempelic -> []
+Kirill Tsyganov -> []
+Андрей Зубов -> [('Андрей', 1)]
+Denis Samonenko -> []
+Евгений Костин -> []
+Дмитрий Смирнов -> [('Дмитрий ❄️', 3094)]
+
+42 [('Alexander Sysoev', 17191), ('TRY', 15525), ('JoyAndEnjoy', 9610), ('Dasein', 8543), ('😉Максим', 7793), ('Александр', 7306), ('Bruh... Тропический', 7073), ('Николай', 5944), ('D:', 5807), ('Donique Keque', 5647), ('Sham Shab', 5268), ('Нехочуха', 4213), ('Егор Краснопевцев', 3637), ('Вадим', 3141), ('Дмитрий ❄️', 3094), ('za ri na', 3006), ('Дед Семён', 2411), ('positive', 2345), ('Minessota', 2319), ('c♂da', 2261), ('Aleksandr Evmenov', 2166), ('Pelf', 2126), ('Download Politach bot', 2066), ('Etozhebot', 1864), ('Loki', 1722), ('Скачать видео из YouTube Pinterest', 1703), ('TrueBonk', 1695), ('Лёшка', 1690), ('Vincent Vegan', 1587), ('преттигерл', 1303), ('Семен Свалов', 1156), ('I', 1058), ('X L', 992), ('Dn', 722), ('Mira', 639), ('allison road', 576), ('Sosed_Sverhu', 514), ('Боша Толмани', 445), ('SaluteSpeech Bot', 433), ('Goodman', 392), ('Елена Олеговна', 315), ('Kotyan', 309)]
